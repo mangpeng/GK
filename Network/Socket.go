@@ -1,4 +1,4 @@
-package Socket
+package Network
 
 import (
 	"errors"
