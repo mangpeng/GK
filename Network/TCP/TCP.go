@@ -6,9 +6,9 @@ import (
 	"net"
 )
 
-// TCPSession
+// Session
 // It contains a TCP connection objects and i/o data.
-type TCPSession struct {
+type Session struct {
 	connection net.Conn
 	connected  bool
 	buffer     receiveBuffer
@@ -20,36 +20,36 @@ const (
 
 // TryConnect
 // Try to tcp-connection.
-func (ts *TCPSession) TryConnect(address string, port uint) (bool, error) {
+func (s *Session) TryConnect(addr string, port uint) (bool, error) {
 	var err error
-	host := fmt.Sprint(address, ":", port)
-	ts.connection, err = net.Dial("tcp", host)
+	host := fmt.Sprint(addr, ":", port)
+	s.connection, err = net.Dial("tcp", host)
 
 	if err != nil {
 		return false, err
 	}
 
-	ts.connected = true
-	ts.buffer.initReceiveBuffer()
+	s.connected = true
+	s.buffer.initReceiveBuffer()
 	return true, nil
 }
 
 // TryDisconnect
 // Try to tcp-disconnection.
-func (ts *TCPSession) TryDisconnect() (bool, error) {
-	err := ts.connection.Close()
+func (s *Session) TryDisconnect() (bool, error) {
+	err := s.connection.Close()
 	if err != nil {
 		return false, err
 	}
 
-	ts.connected = false
+	s.connected = false
 	return true, nil
 }
 
 // IsConnected
 // Return the state of connection : true or false.
-func (ts *TCPSession) IsConnected() bool {
-	return ts.connected
+func (s *Session) IsConnected() bool {
+	return s.connected
 }
 
 //// DelayClose 곧 끊김 ㅋ
@@ -62,47 +62,47 @@ func (ts *TCPSession) IsConnected() bool {
 //	}()
 //}
 
-// ConnectionHandler
+// IOReceiveHandler
 // todo It need to check later.
-func (ts *TCPSession) OnReceivedIOHandler(onSuccess func(), onFail func(error)) {
+func (s *Session) IOReceiveHandler(success func(), fail func(error)) {
 	readBuffer := make([]byte, readBufferSize)
 	for {
-		numOfBytes, err := ts.connection.Read(readBuffer)
+		l, err := s.connection.Read(readBuffer)
 		if err != nil {
-			if numOfBytes == 0 {
-				ts.connected = false
-				onFail(err)
+			if l == 0 {
+				s.connected = false
+				fail(err)
 			}
 			break
 		}
 
-		if numOfBytes > 0 {
-			ts.buffer.write(readBuffer[:numOfBytes])
-			onSuccess()
+		if l > 0 {
+			s.buffer.write(readBuffer[:l])
+			success()
 		}
 	}
 }
 
-func (ts *TCPSession) Send(data []byte) (int, error) {
-	return ts.connection.Write(data)
+func (s *Session) Send(buf []byte) (int, error) {
+	return s.connection.Write(buf)
 }
 
-func (ts *TCPSession) Peek(size int) ([]byte, error) {
-	return ts.buffer.peek(size)
+func (s *Session) Peek(size int) ([]byte, error) {
+	return s.buffer.peek(size)
 }
 
-func (ts *TCPSession) Read(buf []byte, size int) error {
-	return ts.buffer.read(buf, size)
+func (s *Session) Read(buf []byte, size int) error {
+	return s.buffer.read(buf, size)
 }
 
 // GetLocalAddr
 // Return host local address.
-func (ts *TCPSession) GetLocalAddr() net.Addr {
-	return ts.connection.LocalAddr()
+func (s *Session) GetLocalAddr() string {
+	return s.connection.LocalAddr().String()
 }
 
 // GetRemoteAddr
 // Return quest(peer) address.
-func (ts *TCPSession) GetRemoteAddr() net.Addr {
-	return ts.connection.RemoteAddr()
+func (s *Session) GetRemoteAddr() string {
+	return s.connection.RemoteAddr().String()
 }

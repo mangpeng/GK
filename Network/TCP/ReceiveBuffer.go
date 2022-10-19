@@ -26,13 +26,13 @@ func (b *receiveBuffer) initReceiveBuffer() {
 // Copy new datum to receiveBuffer.
 // if not enough to space to copy, append byte slice.
 // todo if don't read bytes while write bytes, receiveBuffer is getting big forever? how can i process this?
-func (b *receiveBuffer) write(p []byte) {
-	l := len(p)
-	if n := copy(b.chunk[b.offset:], p); n < l {
-		b.chunk = append(b.chunk, p[n:]...)
+func (b *receiveBuffer) write(buf []byte) {
+	l := len(buf)
+	if n := copy(b.chunk[b.offset:], buf); n < l {
+		b.chunk = append(b.chunk, buf[n:]...)
 	}
 
-	b.offset = b.offset + len(p)
+	b.offset = b.offset + len(buf)
 }
 
 // peek

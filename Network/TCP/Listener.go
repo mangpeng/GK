@@ -28,19 +28,19 @@ func (l *Listener) Listen(port uint) error {
 
 // AsyncAccept
 // Accept clients by go routine.
-func (l *Listener) AsyncAccept(acceptCallback func(*TCPSession)) {
+func (l *Listener) AsyncAccept(call func(*Session)) {
 	go func() {
 		for {
-			conn, _ := l.listener.Accept()
+			c, _ := l.listener.Accept()
 			if l.stop {
 				break
 			}
-			connection := new(TCPSession)
-			connection.connection = conn
-			connection.connected = true
-			connection.buffer.initReceiveBuffer()
+			s := new(Session)
+			s.connection = c
+			s.connected = true
+			s.buffer.initReceiveBuffer()
 
-			acceptCallback(connection)
+			call(s)
 		}
 	}()
 }
