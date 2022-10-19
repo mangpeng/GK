@@ -6,16 +6,22 @@ import (
 )
 
 func main() {
-	StartInterval(1, 10)
-	for {
-	}
+	fmt.Println(c)
 }
 
 func StartInterval(interval int, count int) {
 	PlayInterval(interval, count)
 }
 
-var Ⲁ int
+type Color int
+
+const (
+	a Color = iota
+	b
+	c
+	d
+	e
+)
 
 func StopInterval() {
 
