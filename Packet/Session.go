@@ -11,7 +11,7 @@ import (
 
 type Session struct {
 	Host       string
-	Connection *socket.TCP
+	Connection *socket.Tcp
 	AccountId  string
 	Wg         WaitGroupCount
 	Result     interface{}
