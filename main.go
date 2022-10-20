@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	fmt.Println(c)
+
 }
 
 func StartInterval(interval int, count int) {
