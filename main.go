@@ -6,7 +6,11 @@ import (
 )
 
 func main() {
+	fn := func(first int, second int) int {
+		return first + second
+	}(3, 4)
 
+	println(fn)
 }
 
 func StartInterval(interval int, count int) {
