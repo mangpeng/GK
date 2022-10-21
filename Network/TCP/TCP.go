@@ -20,18 +20,17 @@ const (
 
 // TryConnect
 // Try to tcp-connection.
-func (s *Session) TryConnect(addr string, port uint) (bool, error) {
+func (s *Session) TryConnect(addr string, port uint) error {
 	var err error
 	host := fmt.Sprint(addr, ":", port)
 	s.connection, err = net.Dial("tcp", host)
 
 	if err != nil {
-		return false, err
+		s.connected = true
+		s.buffer.initReceiveBuffer()
 	}
 
-	s.connected = true
-	s.buffer.initReceiveBuffer()
-	return true, nil
+	return err
 }
 
 // TryDisconnect
