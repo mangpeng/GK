@@ -82,6 +82,10 @@ func (s *Session) IOReceiveHandler(success func(), fail func(error)) {
 	}
 }
 
+func (s *Session) Len() int {
+	return s.buffer.Len()
+}
+
 func (s *Session) Send(buf []byte) (int, error) {
 	return s.connection.Write(buf)
 }

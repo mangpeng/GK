@@ -22,6 +22,10 @@ func (b *receiveBuffer) initReceiveBuffer() {
 	b.chunk = make([]byte, receiveChunkBufferSize)
 }
 
+func (b *receiveBuffer) Len() int {
+	return b.offset
+}
+
 // write
 // Copy new datum to receiveBuffer.
 // if not enough to space to copy, append byte slice.
